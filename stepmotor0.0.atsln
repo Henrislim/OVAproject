@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "stepmotor0.0", "stepmotor0.0\stepmotor0.0.cppproj", "{83500C6C-1C3E-4E2D-9925-09374D93EFEB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{83500C6C-1C3E-4E2D-9925-09374D93EFEB}.Debug|AVR.ActiveCfg = Debug|AVR
+		{83500C6C-1C3E-4E2D-9925-09374D93EFEB}.Debug|AVR.Build.0 = Debug|AVR
+		{83500C6C-1C3E-4E2D-9925-09374D93EFEB}.Release|AVR.ActiveCfg = Release|AVR
+		{83500C6C-1C3E-4E2D-9925-09374D93EFEB}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
