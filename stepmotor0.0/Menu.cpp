@@ -12,8 +12,8 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
-#include "ADS1115.h"
 
+#include "ADS1115.h"
 #include "Stepper.h"
 #include "ADC.h"
 #include "UARTtool.h"
@@ -23,42 +23,41 @@
 Stepper  myStepper;
 UARTtool myUART;
 ADC2     myADC;
-ADS1115 myADS1115;
-VolTodB myVolTodB;
+ADS1115  myADS1115;
+VolTodB  myVolTodB;
 
 
-void moveup(int);
-void movedown(int);
-double readVoltage();
-double readVoltageLite();
-void replyList(int);
-void menuStart();
+void moveUpDown(int);
 void moveUpDownLite(int);
 void stepperStop();
+
+double readVoltage();
+double readVoltageLite();
+
+void replyList(int);
+void menuStart();
+
+
 void goToTargetVol(double);
 void reset();
 
 int mode=0;
 double voltageArray[16];
-double voltageSumSample[16];
 double voltageSum=0;
-double voltageAverage2=0;
-double voltagePottemp,voltagePot;
-//double averageVoltageValue,voltageValue,voltageValue1,voltageValue2,;
-//double test=3.14;
-char buffer0[10],buffer1[10];//,buffer2[10],buffer3[10];
+char buffer0[10];
+
 char welcome_msg[]="Welcome!";
 char potv_msg[]="Pot V:";
 char wiperv_msg[]="Wiper V:";
-int steps_to_move_up=4;
-int steps_to_move_down=-4;
+
+int STEP_TO_UP=4;
+int STEP_TO_DOWN=-4;
 
 char userInputString[10];
 char userInputSub;
 int  userInputIdex=0;
 
 bool modelA=false;
-bool modelB=false;
 bool modelR=false;
 bool modelT=false;
 
@@ -69,27 +68,25 @@ Menu::Menu(){
 }
 
 void Menu::MenuStart(){
-		
 		menuStart();
-		myStepper.setSpeed(5);
+		myStepper.setSpeed(4);//Set the speed of the stepper
+		stepperStop();
 }
 
 
 
 ISR (USART_RX_vect){
 	char userInput = UDR0;
-	UDR0=userInput;
+	UDR0=userInput; // echo back
 	
-	if (userInput !=9)
+	if (userInput !=9) //tab - use to confirm the input
 	{
-		userInputSub=userInput;
-		userInputString[userInputIdex]=userInput;
+		userInputSub=userInput;//store the last input
+		userInputString[userInputIdex]=userInput;//store the string input
 		userInputIdex++;
 	}
 	
 	else{
-		
-	
 	
 	//Setting the mode
 	if (userInputSub=='A'||userInputSub=='a')
@@ -100,15 +97,7 @@ ISR (USART_RX_vect){
 		modelR=false;
 		modelT=false;
 	}
-	
-	else if (userInputSub=='B'||userInputSub=='b')
-	{
-		replyList(2);
-		modelB=true;
-		modelA=false;
-		modelR=false;
-		modelT=false;
-	}
+
 	else if (userInputSub=='R'||userInputSub=='r') //reset to the minimum attenuation
 	{
 		replyList(3);
@@ -118,7 +107,7 @@ ISR (USART_RX_vect){
 		modelT=false;
 		
 	}
-	else if (userInputSub=='T'||userInputSub=='t') //reset to the minimum attenuation
+	else if (userInputSub=='T'||userInputSub=='t') //Target voltage mode
 	{
 		replyList(4);
 		modelR=false;
@@ -137,41 +126,24 @@ ISR (USART_RX_vect){
 	}
 
 	
-	//Mode A
+	//Mode A: Move up or down step by step
 	if (modelA)
 	{
 		if (userInputSub=='w'||userInputSub=='W')
 		{
-			//replyList(3);
 			if (readVoltageLite()<4.00)
 			{
-				moveup(steps_to_move_up);
+				moveUpDown(STEP_TO_UP);
 			}
 			
 		}
 		else if (userInputSub=='s'||userInputSub=='S')
 		{
-			//replyList(4);
-			if (readVoltageLite()>0.6)
+			if (readVoltageLite()>0.2)
 			{
-				movedown(steps_to_move_down);
+				moveUpDown(STEP_TO_DOWN);
 			}
 			
-		}
-	}
-	else if (modelB)
-	{
-		char bufferx[10];
-		double tempnum;
-		dtostrf(tempnum,4,2,bufferx);
-		myUART.uart_transmit_string(bufferx);
-		
-		if (tempnum<0.8||tempnum>4.2)
-		{
-			replyList(3);
-		}
-		else{
-			replyList(4);
 		}
 	}
 	
@@ -182,17 +154,20 @@ ISR (USART_RX_vect){
 	
 	else if (modelT)
 	{
+		if (userInput==9)
+		{ //do nothing
+		}
+		else{
 		char bufferx[10];
 		double dB= atof(userInputString);
-		if (dB>=0&&dB<=29)
+		if (dB>0&&dB<=29)
 		{
 			double targetVol=myVolTodB.getVoltage(dB);
 			dtostrf(targetVol,4,2,bufferx);
 			myUART.uart_transmit_string(bufferx);
 			goToTargetVol(targetVol);
 		}
-			
-		
+		}
 	}
 	
 	strcpy(userInputString,"");
@@ -234,22 +209,21 @@ void replyList(int index){
 
 
 void menuStart(){
-			char msg1[]="Welcome to OVA650 Testing System";
+			char msg1[]="Welcome";
 			char msg2[]="========= Menu =========";
 			char msg3[]="A. Step by step: W+ and S-.";
-			char msg4[]="B. Target Voltage.";
-			char msg5[]="R. Reset";
-			char msg6[]="T. Target dB";
+			char msg4[]="R. Reset";
+			char msg5[]="T. Target dB";
 			
 			myUART.uart_transmit_string(msg1);
 			myUART.uart_transmit_string(msg2);
 			myUART.uart_transmit_string(msg3);
 			myUART.uart_transmit_string(msg4);
 			myUART.uart_transmit_string(msg5);
-			myUART.uart_transmit_string(msg6);
+		
 }
 
-void moveup(int stepup){
+void moveUpDown(int stepup){
 	
 	myStepper.step(stepup);
 	_delay_ms(200);
@@ -260,22 +234,10 @@ void moveup(int stepup){
 	
 }
 
-void movedown(int stepdown){
-	
-	myStepper.step(stepdown);
-	_delay_ms(200);
-	myStepper.motorOff();
-	_delay_ms(1000);
-	readVoltage();
-	
-	
-	
-}
-
 void moveUpDownLite(int stepdown){
 	
 	myStepper.step(stepdown);
-	_delay_ms(300);
+	_delay_ms(500);
 	myStepper.motorOff();
 }
 
@@ -298,7 +260,6 @@ double readVoltage(){
 	//Convert double to stringw
 	dtostrf(voltage, 6, 3, buffer0);
 	//dtostrf(voltagePot,4,2,buffer1);
-	
 	myUART.uart_transmit_string(wiperv_msg);
 	myUART.uart_transmit_string(buffer0);
 	
@@ -323,27 +284,24 @@ void reset(){
 	    double presentVol= readVoltageLite();
 		double downLimit= 0.7;
 		double upperLimit=4.0;
+		
+		//Move with big steps
 		if (presentVol>downLimit)
 		{
-			int tempStep= -(((presentVol-0.7)/0.03)*4);
-			//char temp = 'H';
+			int tempStep= ((presentVol-0.7)/0.03)*STEP_TO_DOWN;
 			moveUpDownLite(tempStep);
 		}
 		
-		/*for (;tempStep>0;tempStep--)
-		{
-			movedown(4);
-			myUART.uart_transmit(temp);
-			_delay_ms(500);
-		}*/
-		
+		//Move with small steps
 		while (readVoltageLite()>downLimit)
 		{
-			moveUpDownLite(-4);
+			moveUpDownLite(STEP_TO_DOWN);
 		}
+		
 		double initVolt=readVoltageLite();
 		myVolTodB.setInitVoltage(initVolt);
-		readVoltage();
+		
+		//Finish reset
 		char msg[]="Reset down!";
 		myUART.uart_transmit_string(msg);
 }
@@ -356,23 +314,23 @@ void goToTargetVol(double targetVoltage){
 	else{
 	if (targetVoltage>presentVoltage)
 	{
-		int tempStep= ((targetVoltage-presentVoltage)/0.03)*4;
+		int tempStep= ((targetVoltage-presentVoltage)/0.03)*STEP_TO_UP;
 		moveUpDownLite(tempStep);
 		
 		while (readVoltageLite()<(targetVoltage))
 		{
-			moveUpDownLite(4);
+			moveUpDownLite(STEP_TO_UP);
 		}
 		
 		
 	}
 	else{
-		int tempStep= ((targetVoltage-presentVoltage)/0.03)*4;
+		int tempStep= ((presentVoltage-targetVoltage)/0.03)*STEP_TO_DOWN;
 		moveUpDownLite(tempStep);
 		
 		while (readVoltageLite()>(targetVoltage))
 		{
-			moveUpDownLite(-4);
+			moveUpDownLite(STEP_TO_DOWN);
 		}
 	}
 	}

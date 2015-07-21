@@ -149,6 +149,9 @@
     <Compile Include="ADS1115.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="ReadMe.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="VolTodB.cpp">
       <SubType>compile</SubType>
     </Compile>
