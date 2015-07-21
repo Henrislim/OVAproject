@@ -93,7 +93,6 @@ ISR (USART_RX_vect){
 	{
 		replyList(1);
 		modelA=true;
-		modelB=false;
 		modelR=false;
 		modelT=false;
 	}
@@ -102,7 +101,6 @@ ISR (USART_RX_vect){
 	{
 		replyList(3);
 		modelR=true;
-		modelB=false;
 		modelA=false;
 		modelT=false;
 		
@@ -111,7 +109,6 @@ ISR (USART_RX_vect){
 	{
 		replyList(4);
 		modelR=false;
-		modelB=false;
 		modelA=false;
 		modelT=true;
 		
@@ -119,7 +116,6 @@ ISR (USART_RX_vect){
 	else if (userInputSub==27)//ESC
 	{
 		menuStart();
-		modelB=false;
 		modelA=false;
 		modelR=false;
 		modelT=false;
