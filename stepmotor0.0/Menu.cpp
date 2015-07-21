@@ -150,7 +150,7 @@ ISR (USART_RX_vect){
 	
 	else if (modelT)
 	{
-		if (userInput==9)
+		if (userInputSub=='T'||userInputSub=='t')
 		{ //do nothing
 		}
 		else{
@@ -161,7 +161,7 @@ ISR (USART_RX_vect){
 			double targetVol=myVolTodB.getVoltage(dB);
 			dtostrf(targetVol,4,2,bufferx);
 			myUART.uart_transmit_string(bufferx);
-			goToTargetVol(targetVol);
+			//goToTargetVol(targetVol);
 		}
 		}
 	}
