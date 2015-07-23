@@ -108,13 +108,13 @@ http://www.arduino.cc/en/Tutorial/Stepper
 
 Millis myMillis;
 
-Stepper::Stepper()//int number_of_steps, int motor_pin_1, int motor_pin_2, int motor_pin_3, int motor_pin_4
+Stepper::Stepper()
 {
   step_number = 0;      // which step the motor is on
   speed = 0;        // the motor speed, in revolutions per minute
   direction = 0;      // motor direction
   last_step_time = 0;    // time stamp in ms of the last step taken
-  number_of_steps = 2000;
+  number_of_steps = 4096;
   //this->number_of_steps = number_of_steps;    // total number of steps for this motor
   /*
   // Arduino pins for the motor control connection:

@@ -69,7 +69,7 @@ Menu::Menu(){
 
 void Menu::MenuStart(){
 		menuStart();
-		myStepper.setSpeed(4);//Set the speed of the stepper
+		myStepper.setSpeed(1);//Set the speed of the stepper
 		stepperStop();
 }
 
@@ -162,7 +162,7 @@ ISR (USART_RX_vect){
 			if(targetVol!=0){
 			dtostrf(targetVol,4,2,bufferx);
 			myUART.uart_transmit_string(bufferx);
-			//goToTargetVol(targetVol);
+			goToTargetVol(targetVol);
 			}
 		}
 		}
@@ -286,7 +286,7 @@ void reset(){
 		//Move with big steps
 		if (presentVol>downLimit)
 		{
-			int tempStep= ((presentVol-0.7)/0.025)*STEP_TO_DOWN;
+			int tempStep= ((presentVol-0.7)/0.028)*STEP_TO_DOWN;
 			moveUpDownLite(tempStep);
 		}
 		
@@ -312,7 +312,7 @@ void goToTargetVol(double targetVoltage){
 	else{
 	if (targetVoltage>presentVoltage)
 	{
-		int tempStep= ((targetVoltage-presentVoltage)/0.025)*STEP_TO_UP;
+		int tempStep= ((targetVoltage-presentVoltage)/0.03)*STEP_TO_UP;
 		moveUpDownLite(tempStep);
 		
 		while (readVoltageLite()<(targetVoltage))
