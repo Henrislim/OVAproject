@@ -159,9 +159,11 @@ ISR (USART_RX_vect){
 		if (dB>0&&dB<=29)
 		{
 			double targetVol=myVolTodB.getVoltage(dB);
+			if(targetVol!=0){
 			dtostrf(targetVol,4,2,bufferx);
 			myUART.uart_transmit_string(bufferx);
 			//goToTargetVol(targetVol);
+			}
 		}
 		}
 	}
@@ -284,7 +286,7 @@ void reset(){
 		//Move with big steps
 		if (presentVol>downLimit)
 		{
-			int tempStep= ((presentVol-0.7)/0.03)*STEP_TO_DOWN;
+			int tempStep= ((presentVol-0.7)/0.025)*STEP_TO_DOWN;
 			moveUpDownLite(tempStep);
 		}
 		
@@ -310,7 +312,7 @@ void goToTargetVol(double targetVoltage){
 	else{
 	if (targetVoltage>presentVoltage)
 	{
-		int tempStep= ((targetVoltage-presentVoltage)/0.03)*STEP_TO_UP;
+		int tempStep= ((targetVoltage-presentVoltage)/0.025)*STEP_TO_UP;
 		moveUpDownLite(tempStep);
 		
 		while (readVoltageLite()<(targetVoltage))

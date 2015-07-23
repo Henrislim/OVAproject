@@ -37,6 +37,7 @@ double VolTodB::getVoltage(double dB){
 	int size = sizeof(dBPoint);
 	double inv_dB=0-dB;
 	double voltage=0;
+	
 	if (inv_dB==0)
 	{
 		voltage=((inv_dB-t[0])/k[0]);
@@ -48,11 +49,12 @@ double VolTodB::getVoltage(double dB){
 		if (inv_dB<dBPoint[i]&&inv_dB>=dBPoint[i+1])
 		{
 			voltage= ((inv_dB-t[i])/k[i]);
+			return voltage;
 		}
 	}
-	
 	}
 	return voltage;
+	
 }
 
 
