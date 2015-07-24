@@ -114,8 +114,8 @@ Stepper::Stepper()
   speed = 0;        // the motor speed, in revolutions per minute
   direction = 0;      // motor direction
   last_step_time = 0;    // time stamp in ms of the last step taken
-  number_of_steps = 4096;
-  //this->number_of_steps = number_of_steps;    // total number of steps for this motor
+  number_of_steps = 1024;
+    //this->number_of_steps = number_of_steps;    // total number of steps for this motor
   /*
   // Arduino pins for the motor control connection:
   this->motor_pin_1 = motor_pin_1;
@@ -176,7 +176,7 @@ void Stepper::step(int steps_to_move)
       // increment or decrement the step number,
       // depending on direction:
       if (direction == 1) {
-        step_number++;
+		  step_number++;
         if (step_number == number_of_steps) {
           step_number = 0;
         }
@@ -190,7 +190,7 @@ void Stepper::step(int steps_to_move)
       // decrement the steps left:
       steps_left--;
       // step the motor to step number 0, 1, 2, or 3:
-      stepMotor(step_number % 4);
+      stepMotor(step_number % 8);
     }
   }
 }
@@ -229,31 +229,55 @@ void Stepper::stepMotor(int thisStep)
 		   PORTB &= !_BV(1);
 		   PORTB |= _BV(3);
 		   PORTB |= _BV(2);
-
 		   break;
-		   case 1:    // 0101
+		   
+		   case 1:    // 0001
+		   PORTB &= !_BV(0);
+		   PORTB &= !_BV(1);
+		   PORTB &= !_BV(2);
+		   PORTB |= _BV(3);
+		   break;
+		   
+		   case 2:    // 0101
            PORTB &= !_BV(0);
 		   PORTB &= !_BV(2);
 		   PORTB |= _BV(1);
 		   PORTB |= _BV(3);
-		   
-		  
 		   break;
-		   case 2:    //1100
-		  
+		   
+		   case 3:    // 0100
+           PORTB &= !_BV(0);
+		   PORTB &= !_BV(2);
+		   PORTB &= !_BV(3);
+		   PORTB |= _BV(1);
+		   break;
+		   
+		   case 4:    //1100
 		   PORTB &= !_BV(2);
 		   PORTB &= !_BV(3);
 		   PORTB |= _BV(0);
 		   PORTB |= _BV(1);
-
 		   break;
-		   case 3:    //1010
+		   
+		   case 5:    //1000
+		   PORTB &= !_BV(2);
+		   PORTB &= !_BV(3);
+		   PORTB &= !_BV(1);
+		   PORTB |= _BV(0);
+		   break;
+		   
+		   case 6:    //0010
 		   PORTB &= !_BV(3);
 		   PORTB &= !_BV(1);
 		   PORTB |= _BV(2);
 		   PORTB |= _BV(0);
+		   break;
 		   
-	
+		   case 7:    //1010
+		   PORTB &= !_BV(3);
+		   PORTB &= !_BV(1);
+		   PORTB &= !_BV(0);
+		   PORTB |= _BV(2);
 		   break;
 		  
 	   }
@@ -279,6 +303,40 @@ void Stepper::motorOff(void)
 	  PORTB &= !_BV(2);
 	  PORTB &= !_BV(3);
 }
+
+
+//This is 4 correct
+/* case 0:    // 0011
+		   PORTB &= !_BV(0);
+		   PORTB &= !_BV(1);
+		   PORTB |= _BV(3);
+		   PORTB |= _BV(2);
+
+		   break;
+		   case 1:    // 0101
+           PORTB &= !_BV(0);
+		   PORTB &= !_BV(2);
+		   PORTB |= _BV(1);
+		   PORTB |= _BV(3);
+		   
+		  
+		   break;
+		   case 2:    //1100
+		  
+		   PORTB &= !_BV(2);
+		   PORTB &= !_BV(3);
+		   PORTB |= _BV(0);
+		   PORTB |= _BV(1);
+
+		   break;
+		   case 3:    //1010
+		   PORTB &= !_BV(3);
+		   PORTB &= !_BV(1);
+		   PORTB |= _BV(2);
+		   PORTB |= _BV(0);
+		   
+		   break;*/
+		  
 
 /*
 

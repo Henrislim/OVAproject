@@ -50,8 +50,8 @@ char welcome_msg[]="Welcome!";
 char potv_msg[]="Pot V:";
 char wiperv_msg[]="Wiper V:";
 
-int STEP_TO_UP=4;
-int STEP_TO_DOWN=-4;
+int STEP_TO_UP=8;
+int STEP_TO_DOWN=-8;
 
 char userInputString[10];
 char userInputSub;
@@ -69,7 +69,7 @@ Menu::Menu(){
 
 void Menu::MenuStart(){
 		menuStart();
-		myStepper.setSpeed(1);//Set the speed of the stepper
+		myStepper.setSpeed(2);//Set the speed of the stepper
 		stepperStop();
 }
 
