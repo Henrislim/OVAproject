@@ -50,6 +50,9 @@ char welcome_msg[]="Welcome!";
 char potv_msg[]="Pot V:";
 char wiperv_msg[]="Wiper V:";
 
+int STEP_TO_UP_4=4;
+int STEP_TO_DOWN_4=-4;
+
 int STEP_TO_UP=8;
 int STEP_TO_DOWN=-8;
 
@@ -69,7 +72,7 @@ Menu::Menu(){
 
 void Menu::MenuStart(){
 		menuStart();
-		myStepper.setSpeed(2);//Set the speed of the stepper
+		myStepper.setSpeed(4);//Set the speed of the stepper
 		stepperStop();
 }
 
@@ -129,7 +132,7 @@ ISR (USART_RX_vect){
 		{
 			if (readVoltageLite()<4.00)
 			{
-				moveUpDown(STEP_TO_UP);
+				moveUpDown(2);//STEP_TO_UP_4
 			}
 			
 		}
@@ -137,7 +140,7 @@ ISR (USART_RX_vect){
 		{
 			if (readVoltageLite()>0.2)
 			{
-				moveUpDown(STEP_TO_DOWN);
+				moveUpDown(-2);//STEP_TO_DOWN_4
 			}
 			
 		}
@@ -286,14 +289,14 @@ void reset(){
 		//Move with big steps
 		if (presentVol>downLimit)
 		{
-			int tempStep= ((presentVol-0.7)/0.028)*STEP_TO_DOWN;
+			int tempStep= ((presentVol-0.7)/0.026)*STEP_TO_DOWN;
 			moveUpDownLite(tempStep);
 		}
 		
 		//Move with small steps
 		while (readVoltageLite()>downLimit)
 		{
-			moveUpDownLite(STEP_TO_DOWN);
+			moveUpDownLite(STEP_TO_DOWN_4);
 		}
 		
 		double initVolt=readVoltageLite();
@@ -312,23 +315,23 @@ void goToTargetVol(double targetVoltage){
 	else{
 	if (targetVoltage>presentVoltage)
 	{
-		int tempStep= ((targetVoltage-presentVoltage)/0.03)*STEP_TO_UP;
+		int tempStep= ((targetVoltage-presentVoltage)/0.026)*STEP_TO_UP;
 		moveUpDownLite(tempStep);
 		
 		while (readVoltageLite()<(targetVoltage))
 		{
-			moveUpDownLite(STEP_TO_UP);
+			moveUpDownLite(STEP_TO_UP_4);
 		}
 		
 		
 	}
 	else{
-		int tempStep= ((presentVoltage-targetVoltage)/0.03)*STEP_TO_DOWN;
+		int tempStep= ((presentVoltage-targetVoltage)/0.026)*STEP_TO_DOWN;
 		moveUpDownLite(tempStep);
 		
 		while (readVoltageLite()>(targetVoltage))
 		{
-			moveUpDownLite(STEP_TO_DOWN);
+			moveUpDownLite(STEP_TO_DOWN_4);
 		}
 	}
 	}
