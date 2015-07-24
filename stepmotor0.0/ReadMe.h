@@ -10,7 +10,7 @@
 #define README_H_
 
 //Version0.0.1
-//This is a test!!!
+//Half step, speed 4, 1024
 //The basic functions are completed
 //Optimize the structure of the program
 
