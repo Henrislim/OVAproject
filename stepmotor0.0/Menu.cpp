@@ -132,7 +132,7 @@ ISR (USART_RX_vect){
 		{
 			if (readVoltageLite()<4.00)
 			{
-				moveUpDown(2);//STEP_TO_UP_4
+				moveUpDown(STEP_TO_UP_4);//STEP_TO_UP_4
 			}
 			
 		}
@@ -140,7 +140,7 @@ ISR (USART_RX_vect){
 		{
 			if (readVoltageLite()>0.2)
 			{
-				moveUpDown(-2);//STEP_TO_DOWN_4
+				moveUpDown(-STEP_TO_DOWN_4);//STEP_TO_DOWN_4
 			}
 			
 		}
@@ -304,6 +304,7 @@ void reset(){
 		
 		//Finish reset
 		char msg[]="Reset down!";
+		readVoltage();
 		myUART.uart_transmit_string(msg);
 }
 
