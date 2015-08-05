@@ -132,7 +132,7 @@ ISR (USART_RX_vect){
 		{
 			if (readVoltageLite()<4.00)
 			{
-				moveUpDown(STEP_TO_UP_4);//STEP_TO_UP_4
+				moveUpDown(STEP_TO_UP);//STEP_TO_UP_4
 			}
 			
 		}
@@ -140,7 +140,7 @@ ISR (USART_RX_vect){
 		{
 			if (readVoltageLite()>0.2)
 			{
-				moveUpDown(-STEP_TO_DOWN_4);//STEP_TO_DOWN_4
+				moveUpDown(STEP_TO_DOWN);//STEP_TO_DOWN_4
 			}
 			
 		}
@@ -159,7 +159,7 @@ ISR (USART_RX_vect){
 		else{
 		char bufferx[10];
 		double dB= atof(userInputString);
-		if (dB>0&&dB<=29)
+		if (dB>0&&dB<=26.5)
 		{
 			double targetVol=myVolTodB.getVoltage(dB);
 			if(targetVol!=0){
