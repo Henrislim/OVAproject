@@ -159,7 +159,7 @@ ISR (USART_RX_vect){
 		else{
 		char bufferx[10];
 		double dB= atof(userInputString);
-		if (dB>0&&dB<=26.5)
+		if (dB>0&&dB<=24.5)
 		{
 			double targetVol=myVolTodB.getVoltage(dB);
 			if(targetVol!=0){
@@ -330,10 +330,11 @@ void goToTargetVol(double targetVoltage){
 		int tempStep= ((presentVoltage-targetVoltage)/0.026)*STEP_TO_DOWN;
 		moveUpDownLite(tempStep);
 		
-		while (readVoltageLite()>(targetVoltage))
+		while (readVoltageLite()>(targetVoltage+0.3))
 		{
 			moveUpDownLite(STEP_TO_DOWN_4);
 		}
+		moveUpDownLite(STEP_TO_DOWN_4);
 	}
 	}
 	readVoltage();
