@@ -330,11 +330,11 @@ void goToTargetVol(double targetVoltage){
 		int tempStep= ((presentVoltage-targetVoltage)/0.026)*STEP_TO_DOWN;
 		moveUpDownLite(tempStep);
 		
-		while (readVoltageLite()>(targetVoltage+0.3))
+		while (readVoltageLite()>(targetVoltage))
 		{
 			moveUpDownLite(STEP_TO_DOWN_4);
 		}
-		moveUpDownLite(STEP_TO_DOWN_4);
+		
 	}
 	}
 	readVoltage();
